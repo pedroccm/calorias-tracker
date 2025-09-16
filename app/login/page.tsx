@@ -4,6 +4,17 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { fakeAuth } from '@/lib/auth'
 import toast from 'react-hot-toast'
+import {
+  Container,
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Alert
+} from '@mui/material'
+import { Login } from '@mui/icons-material'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -30,69 +41,77 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Meu Tracker
-            </h1>
-            <p className="text-gray-600">
-              Faça login para continuar
-            </p>
-          </div>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default',
+        px: 2
+      }}
+    >
+      <Container maxWidth="sm">
+        <Card elevation={3}>
+          <CardContent sx={{ p: 4 }}>
+            <Box textAlign="center" mb={4}>
+              <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+                Meu Tracker
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Faça login para continuar
+              </Typography>
+            </Box>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-lg font-medium text-gray-700 mb-3">
-                Usuário
-              </label>
-              <input
-                type="text"
-                id="username"
+            <Box component="form" onSubmit={handleSubmit} sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+              <TextField
+                fullWidth
+                required
+                label="Usuário"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Digite seu usuário"
-                required
                 disabled={loading}
+                size="small"
               />
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block text-lg font-medium text-gray-700 mb-3">
-                Senha
-              </label>
-              <input
+              <TextField
+                fullWidth
+                required
                 type="password"
-                id="password"
+                label="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Digite sua senha"
-                required
                 disabled={loading}
+                size="small"
               />
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-600 text-white py-4 text-lg rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 mt-8"
-            >
-              {loading ? 'Entrando...' : 'Entrar'}
-            </button>
-          </form>
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={loading}
+                fullWidth
+                startIcon={<Login />}
+                sx={{ py: 2, mt: 2 }}
+              >
+                {loading ? 'Entrando...' : 'Entrar'}
+              </Button>
+            </Box>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600 text-center">
-              <strong>Dados de acesso:</strong><br />
-              Usuário: <code className="bg-white px-2 py-1 rounded">pedroccm</code><br />
-              Senha: <code className="bg-white px-2 py-1 rounded">q1w2e3r4t5</code>
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
+            <Alert severity="info" sx={{ mt: 3 }}>
+              <Typography variant="body2" fontWeight="bold" gutterBottom>
+                Dados de acesso:
+              </Typography>
+              <Typography variant="body2">
+                Usuário: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>pedroccm</Box><br />
+                Senha: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>q1w2e3r4t5</Box>
+              </Typography>
+            </Alert>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   )
 }

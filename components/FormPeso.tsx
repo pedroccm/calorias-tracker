@@ -5,6 +5,13 @@ import { format } from 'date-fns'
 import { supabase } from '@/lib/supabase'
 import { fakeAuth } from '@/lib/auth'
 import toast from 'react-hot-toast'
+import {
+  TextField,
+  Button,
+  Box,
+  InputAdornment
+} from '@mui/material'
+import { Scale } from '@mui/icons-material'
 
 export default function FormPeso() {
   const [peso, setPeso] = useState('')
@@ -47,44 +54,45 @@ export default function FormPeso() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="peso" className="block text-lg font-medium text-gray-700 mb-3">
-          Peso (kg)
-        </label>
-        <input
-          type="number"
-          id="peso"
-          step="0.1"
-          value={peso}
-          onChange={(e) => setPeso(e.target.value)}
-          className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
-          placeholder="75.5"
-          disabled={loading}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="data" className="block text-lg font-medium text-gray-700 mb-3">
-          Data
-        </label>
-        <input
-          type="date"
-          id="data"
-          value={data}
-          onChange={(e) => setData(e.target.value)}
-          className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
-          disabled={loading}
-        />
-      </div>
-
-      <button
-        type="submit"
+    <Box component="form" onSubmit={handleSubmit} sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+      <TextField
+        fullWidth
+        required
+        type="number"
+        inputProps={{ step: 0.1 }}
+        label="Peso"
+        value={peso}
+        onChange={(e) => setPeso(e.target.value)}
+        placeholder="75.5"
         disabled={loading}
-        className="w-full bg-green-600 text-white py-4 text-lg rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 mt-8"
+        size="small"
+        InputProps={{
+          startAdornment: <Scale sx={{ mr: 1, color: 'action.active' }} />,
+          endAdornment: <InputAdornment position="end">kg</InputAdornment>
+        }}
+      />
+
+      <TextField
+        fullWidth
+        type="date"
+        label="Data"
+        value={data}
+        onChange={(e) => setData(e.target.value)}
+        disabled={loading}
+        size="small"
+        InputLabelProps={{ shrink: true }}
+      />
+
+      <Button
+        type="submit"
+        variant="contained"
+        size="large"
+        disabled={loading}
+        fullWidth
+        sx={{ py: 2, mt: 2 }}
       >
         {loading ? 'Salvando...' : 'Registrar Peso'}
-      </button>
-    </form>
+      </Button>
+    </Box>
   )
 }

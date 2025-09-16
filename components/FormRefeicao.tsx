@@ -5,6 +5,26 @@ import { format } from 'date-fns'
 import { supabase } from '@/lib/supabase'
 import { fakeAuth } from '@/lib/auth'
 import toast from 'react-hot-toast'
+import {
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  IconButton
+} from '@mui/material'
+import {
+  PhotoCamera,
+  PhotoLibrary,
+  Delete,
+  RestaurantMenu
+} from '@mui/icons-material'
 
 export default function FormRefeicao() {
   const [nome, setNome] = useState('')
@@ -28,6 +48,37 @@ export default function FormRefeicao() {
       setImagem(file)
       setPreviewUrl(URL.createObjectURL(file))
     }
+  }
+
+  const triggerCamera = () => {
+    const input = document.createElement('input') as HTMLInputElement & { capture?: string }
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.capture = 'environment'
+    input.style.display = 'none'
+
+    document.body.appendChild(input)
+
+    input.onchange = (e) => {
+      const target = e.target as HTMLInputElement
+      const file = target.files?.[0]
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error('Imagem muito grande. Máximo 5MB')
+          document.body.removeChild(input)
+          return
+        }
+        setImagem(file)
+        setPreviewUrl(URL.createObjectURL(file))
+      }
+      document.body.removeChild(input)
+    }
+
+    input.oncancel = () => {
+      document.body.removeChild(input)
+    }
+
+    input.click()
   }
 
   const uploadImage = async (file: File) => {
@@ -102,194 +153,174 @@ export default function FormRefeicao() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="nome" className="block text-lg font-medium text-gray-700 mb-3">
-          Nome da Refeição *
-        </label>
-        <input
-          type="text"
-          id="nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          placeholder="Ex: Salada Caesar"
-          disabled={loading}
-        />
-      </div>
+    <Box component="form" onSubmit={handleSubmit} sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+      <TextField
+        fullWidth
+        required
+        label="Nome da Refeição"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+        placeholder="Ex: Salada Caesar"
+        disabled={loading}
+        size="small"
+        InputProps={{
+          startAdornment: <RestaurantMenu sx={{ mr: 1, color: 'action.active' }} />
+        }}
+      />
 
-      <div>
-        <label htmlFor="tipo" className="block text-lg font-medium text-gray-700 mb-3">
-          Tipo de Refeição
-        </label>
-        <select
-          id="tipo"
+      <FormControl fullWidth size="small">
+        <InputLabel>Tipo de Refeição</InputLabel>
+        <Select
           value={tipo}
+          label="Tipo de Refeição"
           onChange={(e) => setTipo(e.target.value)}
-          className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
           disabled={loading}
         >
-          <option value="cafe_da_manha">☕ Café da Manhã</option>
-          <option value="almoco">🍽️ Almoço</option>
-          <option value="lanche">🥤 Lanche</option>
-          <option value="jantar">🍴 Jantar</option>
-          <option value="outro">🍎 Outro</option>
-        </select>
-      </div>
+          <MenuItem value="cafe_da_manha">☕ Café da Manhã</MenuItem>
+          <MenuItem value="almoco">🍽️ Almoço</MenuItem>
+          <MenuItem value="lanche">🥤 Lanche</MenuItem>
+          <MenuItem value="jantar">🍴 Jantar</MenuItem>
+          <MenuItem value="outro">🍎 Outro</MenuItem>
+        </Select>
+      </FormControl>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="data" className="block text-lg font-medium text-gray-700 mb-3">
-            Data
-          </label>
-          <input
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
             type="date"
-            id="data"
+            label="Data"
             value={data}
             onChange={(e) => setData(e.target.value)}
-            className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             disabled={loading}
+            size="small"
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-
-        <div>
-          <label htmlFor="horario" className="block text-lg font-medium text-gray-700 mb-3">
-            Horário
-          </label>
-          <input
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
             type="time"
-            id="horario"
+            label="Horário"
             value={horario}
             onChange={(e) => setHorario(e.target.value)}
-            className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             disabled={loading}
+            size="small"
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
-      </div>
+        </Grid>
+      </Grid>
 
-      <div>
-        <label htmlFor="calorias" className="block text-lg font-medium text-gray-700 mb-3">
-          Calorias (opcional)
-        </label>
-        <input
-          type="number"
-          id="calorias"
-          value={calorias}
-          onChange={(e) => setCalorias(e.target.value)}
-          className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          placeholder="450"
-          disabled={loading}
-        />
-      </div>
+      <TextField
+        fullWidth
+        type="number"
+        label="Calorias (opcional)"
+        value={calorias}
+        onChange={(e) => setCalorias(e.target.value)}
+        placeholder="450"
+        disabled={loading}
+        size="small"
+      />
 
-      <div>
-        <label htmlFor="descricao" className="block text-lg font-medium text-gray-700 mb-3">
-          Descrição (opcional)
-        </label>
-        <textarea
-          id="descricao"
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          rows={4}
-          className="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          placeholder="Detalhes sobre a refeição..."
-          disabled={loading}
-        />
-      </div>
+      <TextField
+        fullWidth
+        multiline
+        rows={4}
+        label="Descrição (opcional)"
+        value={descricao}
+        onChange={(e) => setDescricao(e.target.value)}
+        placeholder="Detalhes sobre a refeição..."
+        disabled={loading}
+        size="small"
+      />
 
-      <div>
-        <label className="block text-lg font-medium text-gray-700 mb-4">
+      <Box>
+        <Typography variant="subtitle1" gutterBottom>
           Foto da Refeição (opcional)
-        </label>
+        </Typography>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center bg-blue-50 border-2 border-blue-200 rounded-lg p-6 hover:bg-blue-100 transition-colors"
-            disabled={loading}
-          >
-            <svg className="w-8 h-8 text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-            <span className="text-blue-700 font-medium text-center">Carregar da Galeria</span>
-          </button>
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid item xs={6}>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => fileInputRef.current?.click()}
+              disabled={loading}
+              startIcon={<PhotoLibrary />}
+              sx={{ py: 2, flexDirection: 'column', gap: 1 }}
+            >
+              <Typography variant="body2">Carregar da Galeria</Typography>
+            </Button>
+          </Grid>
 
-          <button
-            type="button"
-            onClick={() => {
-              const input = document.createElement('input')
-              input.type = 'file'
-              input.accept = 'image/*'
-              input.setAttribute('capture', 'environment')
-              input.style.display = 'none'
-              document.body.appendChild(input)
-              input.onchange = (e) => {
-                const target = e.target as HTMLInputElement
-                const file = target.files?.[0]
-                if (file) {
-                  if (file.size > 5 * 1024 * 1024) {
-                    toast.error('Imagem muito grande. Máximo 5MB')
-                    return
-                  }
-                  setImagem(file)
-                  setPreviewUrl(URL.createObjectURL(file))
-                }
-                document.body.removeChild(input)
-              }
-              input.click()
-            }}
-            className="flex flex-col items-center justify-center bg-green-50 border-2 border-green-200 rounded-lg p-6 hover:bg-green-100 transition-colors"
-            disabled={loading}
-          >
-            <svg className="w-8 h-8 text-green-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-green-700 font-medium text-center">Tirar Foto</span>
-          </button>
-        </div>
+          <Grid item xs={6}>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={triggerCamera}
+              disabled={loading}
+              startIcon={<PhotoCamera />}
+              sx={{ py: 2, flexDirection: 'column', gap: 1 }}
+            >
+              <Typography variant="body2">Tirar Foto</Typography>
+            </Button>
+          </Grid>
+        </Grid>
 
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="hidden"
+          style={{ display: 'none' }}
           disabled={loading}
         />
 
         {previewUrl && (
-          <div className="mt-4">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-full h-64 object-cover rounded-lg border-2 border-gray-200"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setImagem(null)
-                setPreviewUrl('')
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = ''
-                }
-              }}
-              className="mt-3 w-full bg-red-100 text-red-700 py-2 rounded-lg font-medium hover:bg-red-200 transition-colors"
-            >
-              Remover Foto
-            </button>
-          </div>
+          <Card sx={{ mt: 2 }}>
+            <CardContent sx={{ p: 2 }}>
+              <Box
+                component="img"
+                src={previewUrl}
+                alt="Preview"
+                sx={{
+                  width: '100%',
+                  height: 200,
+                  objectFit: 'cover',
+                  borderRadius: 1,
+                  mb: 2
+                }}
+              />
+              <Button
+                fullWidth
+                variant="outlined"
+                color="error"
+                startIcon={<Delete />}
+                onClick={() => {
+                  setImagem(null)
+                  setPreviewUrl('')
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                  }
+                }}
+              >
+                Remover Foto
+              </Button>
+            </CardContent>
+          </Card>
         )}
-      </div>
+      </Box>
 
-      <button
+      <Button
         type="submit"
+        variant="contained"
+        size="large"
         disabled={loading}
-        className="w-full bg-green-600 text-white py-4 text-lg rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 mt-8"
+        fullWidth
+        sx={{ py: 2, mt: 2 }}
       >
         {loading ? 'Salvando...' : 'Registrar Refeição'}
-      </button>
-    </form>
+      </Button>
+    </Box>
   )
 }

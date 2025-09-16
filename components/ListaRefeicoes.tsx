@@ -7,7 +7,19 @@ import { supabase } from '@/lib/supabase'
 import { fakeAuth } from '@/lib/auth'
 import { CtRefeicao } from '@/lib/database.types'
 import toast from 'react-hot-toast'
-import Image from 'next/image'
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  IconButton,
+  Chip,
+  CircularProgress,
+  Alert,
+  AlertTitle
+} from '@mui/material'
+import { Delete } from '@mui/icons-material'
 
 export default function ListaRefeicoes() {
   const [refeicoes, setRefeicoes] = useState<CtRefeicao[]>([])
@@ -73,80 +85,99 @@ export default function ListaRefeicoes() {
   const totalCalorias = refeicoes.reduce((sum, r) => sum + (r.calorias || 0), 0)
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800">
+    <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6" color="text.primary">
           Histórico de Refeições
-        </h3>
-        <input
+        </Typography>
+        <TextField
           type="date"
+          size="small"
           value={dataFiltro}
           onChange={(e) => setDataFiltro(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+          InputLabelProps={{ shrink: true }}
+          sx={{ width: 'auto' }}
         />
-      </div>
+      </Box>
 
       {totalCalorias > 0 && (
-        <div className="bg-green-50 rounded-lg p-4">
-          <p className="text-sm text-gray-600">Total de Calorias do Dia</p>
-          <p className="text-2xl font-bold text-green-600">{totalCalorias} kcal</p>
-        </div>
+        <Alert severity="success" sx={{ bgcolor: 'success.light' }}>
+          <AlertTitle>Total de Calorias do Dia</AlertTitle>
+          <Typography variant="h5" fontWeight="bold" color="success.dark">
+            {totalCalorias} kcal
+          </Typography>
+        </Alert>
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress />
+        </Box>
       ) : refeicoes.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <p>Nenhuma refeição registrada nesta data</p>
-        </div>
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography color="text.secondary">
+            Nenhuma refeição registrada nesta data
+          </Typography>
+        </Box>
       ) : (
-        <div className="space-y-3">
+        <Box sx={{ gap: 2, display: 'flex', flexDirection: 'column' }}>
           {refeicoes.map((refeicao) => (
-            <div key={refeicao.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                      {refeicao.horario}
-                    </span>
-                    <span className="text-xs text-gray-600">
-                      {getTipoLabel(refeicao.tipo || 'outro')}
-                    </span>
-                  </div>
-                  <h4 className="font-semibold text-gray-800">{refeicao.nome}</h4>
-                  {refeicao.descricao && (
-                    <p className="text-sm text-gray-600 mt-1">{refeicao.descricao}</p>
-                  )}
-                  {refeicao.calorias && (
-                    <p className="text-sm font-medium text-green-600 mt-2">
-                      {refeicao.calorias} kcal
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleDelete(refeicao.id!)}
-                  className="text-red-500 hover:text-red-700 ml-4"
-                  title="Excluir"
-                >
-                  🗑️
-                </button>
-              </div>
-              
-              {refeicao.imagem_url && (
-                <div className="mt-3">
-                  <img
-                    src={refeicao.imagem_url}
-                    alt={refeicao.nome}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                </div>
-              )}
-            </div>
+            <Card key={refeicao.id} elevation={1}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                      <Chip label={refeicao.horario} size="small" variant="outlined" />
+                      <Chip
+                        label={getTipoLabel(refeicao.tipo || 'outro')}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Box>
+                    <Typography variant="h6" gutterBottom>
+                      {refeicao.nome}
+                    </Typography>
+                    {refeicao.descricao && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        {refeicao.descricao}
+                      </Typography>
+                    )}
+                    {refeicao.calorias && (
+                      <Typography variant="body2" color="success.main" fontWeight="medium">
+                        {refeicao.calorias} kcal
+                      </Typography>
+                    )}
+                  </Box>
+                  <IconButton
+                    onClick={() => handleDelete(refeicao.id!)}
+                    color="error"
+                    size="small"
+                  >
+                    <Delete />
+                  </IconButton>
+                </Box>
+
+                {refeicao.imagem_url && (
+                  <Box sx={{ mt: 2 }}>
+                    <Box
+                      component="img"
+                      src={refeicao.imagem_url}
+                      alt={refeicao.nome}
+                      sx={{
+                        width: '100%',
+                        height: 200,
+                        objectFit: 'cover',
+                        borderRadius: 1
+                      }}
+                    />
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
           ))}
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   )
 }
