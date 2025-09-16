@@ -36,13 +36,13 @@ export default function FormRefeicao() {
     const filePath = `refeicoes/${fileName}`
 
     const { error, data } = await supabase.storage
-      .from('comida')
+      .from('comidas')
       .upload(filePath, file)
 
     if (error) throw error
 
     const { data: { publicUrl } } = supabase.storage
-      .from('comida')
+      .from('comidas')
       .getPublicUrl(filePath)
 
     return publicUrl
@@ -221,7 +221,9 @@ export default function FormRefeicao() {
               const input = document.createElement('input')
               input.type = 'file'
               input.accept = 'image/*'
-              input.capture = 'environment'
+              input.setAttribute('capture', 'environment')
+              input.style.display = 'none'
+              document.body.appendChild(input)
               input.onchange = (e) => {
                 const target = e.target as HTMLInputElement
                 const file = target.files?.[0]
@@ -233,6 +235,7 @@ export default function FormRefeicao() {
                   setImagem(file)
                   setPreviewUrl(URL.createObjectURL(file))
                 }
+                document.body.removeChild(input)
               }
               input.click()
             }}
