@@ -12,7 +12,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Grid,
   Typography,
   Box,
   Card,
@@ -184,32 +183,28 @@ export default function FormRefeicao() {
         </Select>
       </FormControl>
 
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            type="date"
-            label="Data"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-            disabled={loading}
-            size="small"
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            type="time"
-            label="Horário"
-            value={horario}
-            onChange={(e) => setHorario(e.target.value)}
-            disabled={loading}
-            size="small"
-            InputLabelProps={{ shrink: true }}
-          />
-        </Grid>
-      </Grid>
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <TextField
+          fullWidth
+          type="date"
+          label="Data"
+          value={data}
+          onChange={(e) => setData(e.target.value)}
+          disabled={loading}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          fullWidth
+          type="time"
+          label="Horário"
+          value={horario}
+          onChange={(e) => setHorario(e.target.value)}
+          disabled={loading}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+      </Box>
 
       <TextField
         fullWidth
@@ -239,33 +234,29 @@ export default function FormRefeicao() {
           Foto da Refeição (opcional)
         </Typography>
 
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={6}>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => fileInputRef.current?.click()}
-              disabled={loading}
-              startIcon={<PhotoLibrary />}
-              sx={{ py: 2, flexDirection: 'column', gap: 1 }}
-            >
-              <Typography variant="body2">Carregar da Galeria</Typography>
-            </Button>
-          </Grid>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+            startIcon={<PhotoLibrary />}
+            sx={{ py: 2, flexDirection: 'column', gap: 1 }}
+          >
+            <Typography variant="body2">Carregar da Galeria</Typography>
+          </Button>
 
-          <Grid item xs={6}>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={triggerCamera}
-              disabled={loading}
-              startIcon={<PhotoCamera />}
-              sx={{ py: 2, flexDirection: 'column', gap: 1 }}
-            >
-              <Typography variant="body2">Tirar Foto</Typography>
-            </Button>
-          </Grid>
-        </Grid>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={triggerCamera}
+            disabled={loading}
+            startIcon={<PhotoCamera />}
+            sx={{ py: 2, flexDirection: 'column', gap: 1 }}
+          >
+            <Typography variant="body2">Tirar Foto</Typography>
+          </Button>
+        </Box>
 
         <input
           ref={fileInputRef}
