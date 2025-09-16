@@ -66,7 +66,7 @@ export default function Home() {
 
         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mt-4">
+        <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
           {activeTab === 'peso' && (
             <div className="space-y-6">
               <FormPeso />

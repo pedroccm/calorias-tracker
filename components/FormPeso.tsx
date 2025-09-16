@@ -47,9 +47,9 @@ export default function FormPeso() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="peso" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="peso" className="block text-lg font-medium text-gray-700 mb-3">
           Peso (kg)
         </label>
         <input
@@ -58,14 +58,14 @@ export default function FormPeso() {
           step="0.1"
           value={peso}
           onChange={(e) => setPeso(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
+          className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
           placeholder="75.5"
           disabled={loading}
         />
       </div>
 
       <div>
-        <label htmlFor="data" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="data" className="block text-lg font-medium text-gray-700 mb-3">
           Data
         </label>
         <input
@@ -73,7 +73,7 @@ export default function FormPeso() {
           id="data"
           value={data}
           onChange={(e) => setData(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
           disabled={loading}
         />
       </div>
@@ -81,7 +81,7 @@ export default function FormPeso() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:bg-gray-400"
+        className="w-full bg-green-600 text-white py-4 text-lg rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-400 mt-8"
       >
         {loading ? 'Salvando...' : 'Registrar Peso'}
       </button>
