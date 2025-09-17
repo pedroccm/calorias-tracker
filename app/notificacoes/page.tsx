@@ -195,13 +195,20 @@ export default function NotificacoesPage() {
     setTimeout(() => {
       if ('serviceWorker' in navigator && 'Notification' in window) {
         navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification('Calorias Tracker', {
+          const options: any = {
             body: notifTime.message,
             icon: '/icons/icon-192x192.png',
             badge: '/icons/icon-72x72.png',
             tag: `meal-reminder-${notifTime.id}`,
             requireInteraction: true,
-            actions: [
+            data: {
+              url: '/refeicoes/adicionar'
+            }
+          }
+
+          // Adicionar actions se suportado
+          if ('actions' in Notification.prototype) {
+            options.actions = [
               {
                 action: 'open',
                 title: 'Registrar Refeição'
@@ -210,11 +217,10 @@ export default function NotificacoesPage() {
                 action: 'dismiss',
                 title: 'Dispensar'
               }
-            ],
-            data: {
-              url: '/refeicoes/adicionar'
-            }
-          })
+            ]
+          }
+
+          registration.showNotification('Calorias Tracker', options)
         })
       }
 

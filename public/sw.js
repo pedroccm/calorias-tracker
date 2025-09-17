@@ -77,7 +77,14 @@ self.addEventListener('push', function(event) {
     badge: '/icons/icon-72x72.png',
     tag: 'meal-reminder',
     requireInteraction: true,
-    actions: [
+    data: {
+      url: '/refeicoes/adicionar'
+    }
+  }
+
+  // Adicionar actions se suportado
+  try {
+    options.actions = [
       {
         action: 'open',
         title: 'Registrar Refeição'
@@ -86,10 +93,9 @@ self.addEventListener('push', function(event) {
         action: 'dismiss',
         title: 'Dispensar'
       }
-    ],
-    data: {
-      url: '/refeicoes/adicionar'
-    }
+    ]
+  } catch (e) {
+    // Actions não suportado, continuar sem eles
   }
 
   event.waitUntil(
