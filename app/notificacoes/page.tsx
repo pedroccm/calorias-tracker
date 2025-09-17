@@ -263,14 +263,20 @@ export default function NotificacoesPage() {
       navigator.serviceWorker.ready.then(registration => {
         console.log('✅ ServiceWorker pronto:', registration)
 
-        registration.showNotification('Teste - Calorias Tracker', {
+        const notificationOptions: any = {
           body: 'Esta é uma notificação de teste! 🍎',
           icon: '/icons/icon-192x192.png',
           badge: '/icons/icon-72x72.png',
           tag: 'test-notification',
-          vibrate: [200, 100, 200],
           requireInteraction: true
-        }).then(() => {
+        }
+
+        // Adicionar vibrate se suportado (Android)
+        if ('vibrate' in navigator) {
+          notificationOptions.vibrate = [200, 100, 200]
+        }
+
+        registration.showNotification('Teste - Calorias Tracker', notificationOptions).then(() => {
           console.log('✅ Notificação enviada com sucesso!')
         }).catch(error => {
           console.error('❌ Erro ao enviar notificação:', error)

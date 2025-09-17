@@ -86,13 +86,19 @@ export default function TesteNotificacao() {
       const registration = await navigator.serviceWorker.ready
       addLog('✅ ServiceWorker pronto')
 
-      await registration.showNotification('Teste ServiceWorker', {
+      const options: any = {
         body: 'Notificação via ServiceWorker',
         icon: '/icons/icon-192x192.png',
         badge: '/icons/icon-72x72.png',
-        vibrate: [200, 100, 200],
         tag: 'test-sw'
-      })
+      }
+
+      // Adicionar vibrate se suportado
+      if ('vibrate' in navigator) {
+        options.vibrate = [200, 100, 200]
+      }
+
+      await registration.showNotification('Teste ServiceWorker', options)
 
       addLog('✅ Notificação ServiceWorker enviada')
     } catch (error) {
