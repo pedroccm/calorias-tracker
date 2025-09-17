@@ -29,7 +29,7 @@ export default function LoginPage() {
     // Simular delay de autenticação
     setTimeout(() => {
       const result = fakeAuth.login(username, password)
-      
+
       if (result.success) {
         toast.success(`Bem-vindo, ${result.user?.nome}!`)
         router.push('/')
@@ -105,8 +105,8 @@ export default function LoginPage() {
                 Dados de acesso:
               </Typography>
               <Typography variant="body2">
-                Usuário: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>pedroccm</Box><br />
-                Senha: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>q1w2e3r4t5</Box>
+                Usuário: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>demo</Box><br />
+                Senha: <Box component="code" sx={{ bgcolor: 'grey.100', px: 1, py: 0.5, borderRadius: 1 }}>123</Box>
               </Typography>
             </Alert>
           </CardContent>

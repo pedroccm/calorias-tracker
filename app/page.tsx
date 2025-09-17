@@ -20,7 +20,7 @@ import {
   AppBar,
   Toolbar
 } from '@mui/material'
-import { Logout } from '@mui/icons-material'
+import { Logout, Notifications } from '@mui/icons-material'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'peso' | 'refeicao' | 'historico'>('peso')
@@ -70,6 +70,13 @@ export default function Home() {
               Olá, {user.nome}!
             </Typography>
           </Box>
+          <IconButton
+            onClick={() => router.push('/notificacoes')}
+            color="inherit"
+            title="Notificações"
+          >
+            <Notifications />
+          </IconButton>
           <IconButton
             onClick={handleLogout}
             color="inherit"
