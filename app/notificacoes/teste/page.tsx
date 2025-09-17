@@ -50,24 +50,32 @@ export default function TesteNotificacao() {
       return
     }
 
-    try {
-      const notification = new Notification('Teste Simples', {
-        body: 'Notificação simples sem ServiceWorker',
-        icon: '/icons/icon-192x192.png'
-      })
+    addLog('⚠️ Em PWA, usando ServiceWorker ao invés de new Notification()')
 
-      addLog('✅ Notificação simples enviada')
+    // No contexto PWA, sempre usar ServiceWorker
+    if (!('serviceWorker' in navigator)) {
+      addLog('❌ ServiceWorker não disponível')
+      return
+    }
 
-      notification.onclick = () => {
-        addLog('👆 Notificação clicada')
-        window.focus()
-        notification.close()
+    navigator.serviceWorker.ready.then(registration => {
+      const options: any = {
+        body: 'Teste rápido via ServiceWorker',
+        icon: '/icons/icon-192x192.png',
+        tag: 'test-simple'
       }
 
-      setTimeout(() => notification.close(), 5000)
-    } catch (error) {
-      addLog(`❌ Erro na notificação simples: ${error}`)
-    }
+      // Adicionar vibrate se suportado
+      if ('vibrate' in navigator) {
+        options.vibrate = [200]
+      }
+
+      registration.showNotification('✅ Teste Simples', options)
+        .then(() => addLog('✅ Notificação simples enviada via SW'))
+        .catch(error => addLog(`❌ Erro: ${error}`))
+    }).catch(error => {
+      addLog(`❌ Erro no ServiceWorker: ${error}`)
+    })
   }
 
   const testarServiceWorker = async () => {
@@ -123,6 +131,16 @@ export default function TesteNotificacao() {
             </Button>
             <Button variant="contained" onClick={testarServiceWorker}>
               Teste ServiceWorker
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                addLog('🍎 Testando notificação de refeição...')
+                testarServiceWorker()
+              }}
+            >
+              🔔 Teste Refeição
             </Button>
           </Box>
 

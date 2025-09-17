@@ -192,8 +192,12 @@ export default function NotificacoesPage() {
 
     const timeUntilNotification = scheduledTime.getTime() - now.getTime()
 
+    console.log(`⏰ Agendado para ${scheduledTime.toLocaleString()}, em ${Math.round(timeUntilNotification/1000/60)} minutos`)
+
     setTimeout(() => {
       if ('serviceWorker' in navigator && 'Notification' in window) {
+        console.log('🔔 Disparando notificação:', notifTime.message)
+
         navigator.serviceWorker.ready.then(registration => {
           const options: any = {
             body: notifTime.message,
@@ -201,9 +205,15 @@ export default function NotificacoesPage() {
             badge: '/icons/icon-72x72.png',
             tag: `meal-reminder-${notifTime.id}`,
             requireInteraction: true,
+            timestamp: Date.now(),
             data: {
               url: '/refeicoes/adicionar'
             }
+          }
+
+          // Adicionar vibrate se suportado (Android)
+          if ('vibrate' in navigator) {
+            options.vibrate = [200, 100, 200]
           }
 
           // Adicionar actions se suportado
@@ -220,7 +230,11 @@ export default function NotificacoesPage() {
             ]
           }
 
-          registration.showNotification('Calorias Tracker', options)
+          registration.showNotification('🍎 Calorias Tracker', options)
+            .then(() => console.log('✅ Notificação enviada!'))
+            .catch(error => console.error('❌ Erro na notificação:', error))
+        }).catch(error => {
+          console.error('❌ Erro no ServiceWorker:', error)
         })
       }
 
