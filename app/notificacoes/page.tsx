@@ -248,22 +248,41 @@ export default function NotificacoesPage() {
   }
 
   const testNotification = () => {
+    console.log('🔔 Testando notificação...')
+    console.log('📱 Permissão:', permission)
+    console.log('🔧 ServiceWorker disponível:', 'serviceWorker' in navigator)
+
     if (permission !== 'granted') {
       toast.error('Permissão de notificação necessária')
+      console.error('❌ Permissão negada!')
       return
     }
 
     if ('serviceWorker' in navigator) {
+      console.log('🚀 Enviando notificação via ServiceWorker...')
       navigator.serviceWorker.ready.then(registration => {
+        console.log('✅ ServiceWorker pronto:', registration)
+
         registration.showNotification('Teste - Calorias Tracker', {
           body: 'Esta é uma notificação de teste! 🍎',
           icon: '/icons/icon-192x192.png',
           badge: '/icons/icon-72x72.png',
-          tag: 'test-notification'
+          tag: 'test-notification',
+          vibrate: [200, 100, 200],
+          requireInteraction: true
+        }).then(() => {
+          console.log('✅ Notificação enviada com sucesso!')
+        }).catch(error => {
+          console.error('❌ Erro ao enviar notificação:', error)
         })
+      }).catch(error => {
+        console.error('❌ Erro no ServiceWorker:', error)
       })
+    } else {
+      console.error('❌ ServiceWorker não disponível')
     }
-    toast.success('Notificação de teste enviada!')
+
+    toast.success('Notificação de teste enviada! Verifique o console.')
   }
 
   if (!user) return null
